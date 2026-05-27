@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "./spam_classifier/src"
-    ]
+    ],
+    "git.ignoreLimitWarning": true
 }
