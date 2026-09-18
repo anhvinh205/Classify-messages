@@ -1,103 +1,94 @@
-# 🛡️ Spam Classifier — Naive Bayes
+# Spam Classifier
 
-Phân loại tin nhắn **Spam / Ham** sử dụng thuật toán **Gaussian Naive Bayes**.  
-Project thuộc AI Vietnam AIO2024 — Module 02.
+Ứng dụng phân loại tin nhắn `spam` và `ham` bằng Python, scikit-learn và
+Streamlit. Model hiện tại sử dụng **balanced Logistic Regression** với
+bag-of-words features.
 
----
+## Cấu trúc
 
-## 📁 Cấu trúc project
-
-```
-spam_classifier/
+```text
+.
+├── app.py
+├── train.py
+├── requirements.txt
 ├── data/
-│   └── data.csv                    
-├── models/                         
-│   ├── naive_bayes.pkl
+│   └── data.csv
+├── models/
+│   ├── classifier.pkl
 │   ├── dictionary.pkl
 │   └── label_encoder.pkl
-├── src/
-│   ├── __init__.py
-│   ├── preprocessing.py            
-│   └── model.py                    
-├── app.py                          
-├── train.py                        
-├── requirements.txt
-└── README.md
+└── src/
+    ├── model.py
+    └── preprocessing.py
 ```
 
----
+## Cài đặt
 
-## ⚡ Hướng dẫn chạy
+Yêu cầu Python 3.11 trở lên.
 
-### 1. Cài đặt môi trường
-
-```bash
-# Tạo virtual environment
-python -m venv venv
-
-# Kích hoạt (Windows)
-venv\Scripts\activate
-
-# Kích hoạt (Mac/Linux)
-source venv/bin/activate
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 ```
 
-### 2. Cài thư viện và tải NLTK resources
+NLTK resources được tải tự động khi chạy pipeline lần đầu. Nếu môi trường
+không có Internet, hãy tải trước:
 
-Chạy một lệnh duy nhất để cài tất cả:
-
-```bash
-pip install -r requirements.txt && python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('punkt_tab')"
+```powershell
+python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
 ```
 
-### 3. Huấn luyện model
+## Huấn luyện
 
-```bash
-cd spam_classifier
-python train.py --data data/data.csv
+Chạy từ thư mục gốc repository:
+
+```powershell
+python train.py
 ```
 
-Sau khi chạy xong, model sẽ được lưu tự động vào thư mục `models/`.
+Dataset CSV cần có hai cột:
 
-### 4. Chạy Web App
+```text
+v1: label (ham hoặc spam)
+v2: message
+```
 
-```bash
+Pipeline chia dữ liệu theo stratified train/validation/test split và chỉ xây
+vocabulary từ training set để tránh data leakage. Model được lưu vào `models/`.
+
+## Chạy ứng dụng
+
+```powershell
 streamlit run app.py
 ```
 
-Mở trình duyệt tại `http://localhost:8501`
+## Kết quả tham khảo
 
----
+Đánh giá trên test split của dataset hiện tại:
 
-## 🧪 Pipeline xử lý
+| Metric | Score |
+| --- | ---: |
+| Accuracy | 98.21% |
+| Spam precision | 100.00% |
+| Spam recall | 86.67% |
+| Spam F1-score | 92.86% |
 
-```
+## Pipeline
+
+```text
 Message
-  → Lowercase
-  → Punctuation Removal
-  → Tokenize
-  → Remove Stopwords
-  → Stemming
-  → Bag-of-Words Features
-  → Gaussian Naive Bayes
-  → Spam / Ham
+  -> lowercase and tokenize
+  -> remove stopwords and stem
+  -> bag-of-words features
+  -> balanced Logistic Regression
+  -> Spam / Ham
 ```
 
----
+## Tech stack
 
-## 📊 Kết quả
-
-| Split      | Accuracy |
-|------------|----------|
-| Validation | ~88%     |
-| Test       | ~86%     |
-
----
-
-## 🛠️ Tech Stack
-
-- `scikit-learn` — Naive Bayes, metrics, preprocessing
-- `nltk` — tokenization, stopwords, stemming
-- `pandas` / `numpy` — data handling
-- `streamlit` — web interface
-- `joblib` — model persistence
+- `scikit-learn` - model training and metrics
+- `nltk` - tokenization, stopwords and stemming
+- `pandas` / `numpy` - data processing
+- `streamlit` - web interface
+- `joblib` - model persistence
