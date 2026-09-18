@@ -1,10 +1,12 @@
-# Spam Classifier
+# 🛡️ Spam Classifier
 
 Ứng dụng phân loại tin nhắn `spam` và `ham` bằng Python, scikit-learn và
 Streamlit. Model hiện tại sử dụng **balanced Logistic Regression** với
 bag-of-words features.
 
-## Cấu trúc
+---
+
+## 📁 Cấu trúc project
 
 ```text
 .
@@ -22,7 +24,9 @@ bag-of-words features.
     └── preprocessing.py
 ```
 
-## Cài đặt
+---
+
+## ⚡ Cài đặt
 
 Yêu cầu Python 3.11 trở lên.
 
@@ -39,7 +43,7 @@ không có Internet, hãy tải trước:
 python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
 ```
 
-## Huấn luyện
+## 🚀 Huấn luyện
 
 Chạy từ thư mục gốc repository:
 
@@ -57,13 +61,13 @@ v2: message
 Pipeline chia dữ liệu theo stratified train/validation/test split và chỉ xây
 vocabulary từ training set để tránh data leakage. Model được lưu vào `models/`.
 
-## Chạy ứng dụng
+## 🌐 Chạy ứng dụng
 
 ```powershell
 streamlit run app.py
 ```
 
-## Kết quả tham khảo
+## 📊 Kết quả tham khảo
 
 Đánh giá trên test split của dataset hiện tại:
 
@@ -74,7 +78,7 @@ streamlit run app.py
 | Spam recall | 86.67% |
 | Spam F1-score | 92.86% |
 
-## Pipeline
+## 🧪 Pipeline
 
 ```text
 Message
@@ -85,7 +89,7 @@ Message
   -> Spam / Ham
 ```
 
-## Tech stack
+## 🛠️ Tech stack
 
 - `scikit-learn` - model training and metrics
 - `nltk` - tokenization, stopwords and stemming
