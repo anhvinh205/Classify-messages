@@ -2,7 +2,7 @@
 import joblib
 import numpy as np
 from pathlib import Path
-from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import (
@@ -19,22 +19,36 @@ MODEL_DIR = Path(__file__).parent.parent / "models"
 
 def split_data(X: np.ndarray, y: np.ndarray):
     X_temp, X_test, y_temp, y_test = train_test_split(
-        X, y, test_size=TEST_SIZE, shuffle=True, random_state=SEED
+        X,
+        y,
+        test_size=TEST_SIZE,
+        shuffle=True,
+        random_state=SEED,
+        stratify=y,
     )
     X_train, X_val, y_train, y_val = train_test_split(
-        X_temp, y_temp, test_size=VAL_RATIO, shuffle=True, random_state=SEED
+        X_temp,
+        y_temp,
+        test_size=VAL_RATIO,
+        shuffle=True,
+        random_state=SEED,
+        stratify=y_temp,
     )
     return X_train, X_val, X_test, y_train, y_val, y_test
 
 
-def train_model(X_train: np.ndarray, y_train: np.ndarray) -> GaussianNB:
-    """Train a Gaussian Naive Bayes classifier."""
-    model = GaussianNB()
+def train_model(X_train: np.ndarray, y_train: np.ndarray) -> LogisticRegression:
+    """Train a balanced logistic regression text classifier."""
+    model = LogisticRegression(
+        class_weight="balanced",
+        max_iter=1000,
+        random_state=SEED,
+    )
     model.fit(X_train, y_train)
     return model
 
 
-def evaluate_model(model: GaussianNB, X, y, split_name: str = "Test") -> dict:
+def evaluate_model(model: LogisticRegression, X, y, split_name: str = "Test") -> dict:
     """Evaluate model and return metrics dict."""
     y_pred = model.predict(X)
     acc    = accuracy_score(y, y_pred)
@@ -57,15 +71,15 @@ def encode_labels(labels: list):
 def save_model(model, dictionary: list, le: LabelEncoder):
     """Persist model artifacts to disk."""
     MODEL_DIR.mkdir(exist_ok=True)
-    joblib.dump(model,      MODEL_DIR / "naive_bayes.pkl")
+    joblib.dump(model,      MODEL_DIR / "classifier.pkl")
     joblib.dump(dictionary, MODEL_DIR / "dictionary.pkl")
     joblib.dump(le,         MODEL_DIR / "label_encoder.pkl")
-    print(f"✅  Model saved to {MODEL_DIR}")
+    print(f"Model saved to {MODEL_DIR}")
 
 
 def load_model():
     """Load saved model artifacts. Returns (model, dictionary, label_encoder)."""
-    model      = joblib.load(MODEL_DIR / "naive_bayes.pkl")
+    model      = joblib.load(MODEL_DIR / "classifier.pkl")
     dictionary = joblib.load(MODEL_DIR / "dictionary.pkl")
     le         = joblib.load(MODEL_DIR / "label_encoder.pkl")
     return model, dictionary, le

@@ -1,4 +1,10 @@
 venv/
-data/
+.venv/
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+data/
+.pytest_cache/
+.mypy_cache/
+.streamlit/secrets.toml
